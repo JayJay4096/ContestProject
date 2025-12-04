@@ -484,6 +484,11 @@ checkClear:
 	ret
 charPrompt ENDP
 
+; -----
+; Score Card Procedure
+;
+; This will display your score and statistics for this run of the game.
+; -----
 scoreCard PROC
 	.data
 	charString BYTE "Characters, Correct / Typed - ",0
@@ -537,11 +542,12 @@ main PROC
 	printMe testMsg, msgSize
 	printMe pString, pSize
 	call ReadChar
+	; this input request pauses the program until the user presses any letter key.
 
 	call GetMseconds
 	MOV currTime, EAX
 	MOV startTime, EAX
-	ADD EAX, (60 * 1000)
+	ADD EAX, (60 * 1000) ; 60,000 milliseconds, 60 seconds.
 	MOV endTime, EAX
 
 	call ClrScr
@@ -551,7 +557,7 @@ charLoop:
 	jmp gameplay
 endcharLoop:
 	inc charNum
-	LOOP charLoop
+	LOOP charLoop ; get the next input character until we have all 5
 	call ClrScr
 	CMP perfectFlag, 1
 	JE perfectWord
@@ -561,66 +567,77 @@ backToIt:
 	LOOP gameLoop
 
 preparation:
-	; TODO figure out how to pick a random word
+	; this randomizer selects one of the words.
+	; randomrange function ripped from the irvine library.
 	MOV EAX, 367
 	call RandomRange
 	SHL EAX, 3
-	MOV wordIndex, EAX
+	MOV wordIndex, EAX ; store the starting byte of the chosen word
+
+	; this block prints the current word you need to pick.
 	printMe wordMsg, wmSize
 	mov EDX, OFFSET buffer
 	add EDX, EAX
 	call WriteString
-	MOV ECX, 5
-	MOV charNum, 0
-	MOV perfectFlag, 1
+
+	MOV ECX, 5 ; 5 characters to type
+	MOV charNum, 0 ; set current character to the first
+	MOV perfectFlag, 1 ; this goes to 0 if you mess up
 	call Crlf
 	printMe pString, pSize
 	jmp charLoop
 
-perfectWord:
+perfectWord: ; if you get all 5 letters
 	ADD perfectWords, 2
 	moveCursor perfPos
 	MOV EAX, black*16 + yellow
 	call SetTextColor
-	printMe perfMsg, perfSize
+	printMe perfMsg, perfSize ; show them an encouraging message
 	MOV AX, black*16 + lightGray
 	call SetTextColor
 	moveCursor initPos
 	jmp backToIt
 
 gameplay:
-	call CharPrompt
+	call CharPrompt ; gets an input letter
 	pushad
+	; selects the first letter of the chosen word
 	MOV EAX, wordIndex
 	MOV ESI, OFFSET buffer
 	ADD ESI, EAX
+
+	; selects the letter we actually care about right now
 	ADD ESI, charNum
 	MOV BL, [ESI]
+
+	; compares what was input to the actual letter
 	CMP charBuf, BL
 	popad
 
 	jne missed
 	ADD correctCharacters, 1
-	MOV AX, green*16 + white
+	MOV AX, green*16 + white ; green background, to show that you got it right
 	jmp writing
-missed:
+missed: ; wrong letter
 	MOV perfectFlag, 0
-	MOV AX, red*16 + white
+	MOV AX, red*16 + white ; red background, to show that you made a mistake
 writing:
 	call SetTextColor
 	printMe charBuf, 1
 	ADD charactersWritten, 1
-	MOV AX, black*16 + lightGray
+	MOV AX, black*16 + lightGray ; reset text color
 	call SetTextColor
-	timeCheck
+	timeCheck ; check if 60 seconds have passed after this input
 	jge timeUp
 	jmp endCharLoop
 
 timeUp:
+	; tally up the final score
 	MOV EAX, finalScore
 	ADD EAX, correctCharacters
 	ADD EAX, perfectWords
 	MOV finalScore, EAX
+
 	call ClrScr
 	printMe timeMsg1, tms1
 	MOV EAX, 2000

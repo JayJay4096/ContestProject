@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.29.30159.0	    12/04/25 14:04:33
+Microsoft (R) Macro Assembler Version 14.29.30159.0	    12/04/25 14:11:47
 main.asm						     Page 1 - 1
 
 
@@ -1016,7 +1016,7 @@ main.asm						     Page 1 - 1
  000000F4  E8 00000000 E		call GetMseconds
  000000F9  A3 00000136 R		MOV currTime, EAX
  000000FE  A3 00000132 R		MOV startTime, EAX
- 00000103  05 00002710			ADD EAX, (10 * 1000)
+ 00000103  05 0000EA60			ADD EAX, (60 * 1000)
  00000108  A3 0000013A R		MOV endTime, EAX
 
  0000010D  E8 00000000 E		call ClrScr
@@ -1194,7 +1194,7 @@ main.asm						     Page 1 - 1
  0000032B  E8 00000000 E   *	    call   ExitProcess
  00000330			main ENDP
 				END main
-Microsoft (R) Macro Assembler Version 14.29.30159.0	    12/04/25 14:04:33
+Microsoft (R) Macro Assembler Version 14.29.30159.0	    12/04/25 14:11:47
 main.asm						     Symbols 2 - 1
 
 
