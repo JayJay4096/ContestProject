@@ -1,9 +1,10 @@
-Microsoft (R) Macro Assembler Version 14.29.30159.0	    12/04/25 12:34:15
+Microsoft (R) Macro Assembler Version 14.29.30159.0	    12/04/25 14:04:33
 main.asm						     Page 1 - 1
 
 
-				; We need Irvine Libraries for this.
-				INCLUDE Irvine32.inc
+				INCLUDE stuff.inc
+			      C ; We need Irvine Libraries for this.
+			      C INCLUDE Irvine32.inc
 			      C ; Include file for Irvine32.lib             (Irvine32.inc)
 			      C 
 			      C ;OPTION CASEMAP:NONE		; optional: make identifiers case-sensitive
@@ -20,6 +21,8 @@ main.asm						     Page 1 - 1
 			      C 
 			      C .NOLIST
 			      C .LIST
+			      C 
+			      C 
 			      C 
 
  = 00000005			BufSize = 5
@@ -61,20 +64,15 @@ main.asm						     Page 1 - 1
  00000000 00000000		inputHandler HANDLE 0
  00000004 00000000		outputHandler HANDLE 0
 
- 00000008 00000000		fileHandler HANDLE 0
- 0000000C 71 75 69 63 6B	wordFile BYTE "quickdict.txt",0
-	   64 69 63 74 2E
-	   74 78 74 00
-
  = 0dh, 0ah			newLine EQU <0dh, 0ah>
 
- 0000001A			testMsg LABEL BYTE
- 0000001A  59 6F 75 20 68		BYTE "You have one minute.", newLine
+ 00000008			testMsg LABEL BYTE
+ 00000008  59 6F 75 20 68		BYTE "You have one minute.", newLine
 	   61 76 65 20 6F
 	   6E 65 20 6D 69
 	   6E 75 74 65 2E
 	   0D 0A
- 00000030  54 72 79 20 61		BYTE "Try and get as many correct letters as you can!", newLine
+ 0000001E  54 72 79 20 61		BYTE "Try and get as many correct letters as you can!", newLine
 	   6E 64 20 67 65
 	   74 20 61 73 20
 	   6D 61 6E 79 20
@@ -84,35 +82,35 @@ main.asm						     Page 1 - 1
 	   20 61 73 20 79
 	   6F 75 20 63 61
 	   6E 21 0D 0A
- 00000061  52 65 61 64 79		BYTE "Ready to start? Press any key!", newLine
+ 0000004F  52 65 61 64 79		BYTE "Ready to start? Press any key!", newLine
 	   20 74 6F 20 73
 	   74 61 72 74 3F
 	   20 50 72 65 73
 	   73 20 61 6E 79
 	   20 6B 65 79 21
 	   0D 0A
- 00000081 00000067		msgSize DWORD ($-testMsg)
+ 0000006F 00000067		msgSize DWORD ($-testMsg)
 
- 00000085			wordMsg LABEL BYTE
- 00000085  59 6F 75 72 20		BYTE "Your current word is:",newLine
+ 00000073			wordMsg LABEL BYTE
+ 00000073  59 6F 75 72 20		BYTE "Your current word is:",newLine
 	   63 75 72 72 65
 	   6E 74 20 77 6F
 	   72 64 20 69 73
 	   3A 0D 0A
- 0000009C 00000017		wmSize DWORD ($-wordMsg)
+ 0000008A 00000017		wmSize DWORD ($-wordMsg)
 
- 000000A0			perfMsg LABEL BYTE
- 000000A0  50 65 72 66 65		BYTE "Perfect Word! +2 Bonus Points", newLine
+ 0000008E			perfMsg LABEL BYTE
+ 0000008E  50 65 72 66 65		BYTE "Perfect Word! +2 Bonus Points", newLine
 	   63 74 20 57 6F
 	   72 64 21 20 2B
 	   32 20 42 6F 6E
 	   75 73 20 50 6F
 	   69 6E 74 73 0D
 	   0A
- 000000BF 0000001F		perfSize DWORD ($-perfMsg)
+ 000000AD 0000001F		perfSize DWORD ($-perfMsg)
 
- 000000C3			timeMsg1 LABEL BYTE
- 000000C3  54 69 6D 65 27		BYTE "Time's up! Let's see how you did...", newLine
+ 000000B1			timeMsg1 LABEL BYTE
+ 000000B1  54 69 6D 65 27		BYTE "Time's up! Let's see how you did...", newLine
 	   73 20 75 70 21
 	   20 4C 65 74 27
 	   73 20 73 65 65
@@ -120,15 +118,15 @@ main.asm						     Page 1 - 1
 	   79 6F 75 20 64
 	   69 64 2E 2E 2E
 	   0D 0A
- 000000E8 00000025		tms1 DWORD ($-timeMsg1)
+ 000000D6 00000025		tms1 DWORD ($-timeMsg1)
 
- 000000EC			endMsg LABEL BYTE
- 000000EC  0D 0A 54 68 61		BYTE newLine,"Thanks for playing!", newLine
+ 000000DA			endMsg LABEL BYTE
+ 000000DA  0D 0A 54 68 61		BYTE newLine,"Thanks for playing!", newLine
 	   6E 6B 73 20 66
 	   6F 72 20 70 6C
 	   61 79 69 6E 67
 	   21 0D 0A
- 00000103  50 72 65 73 73		BYTE "Press any key to close the program.", newLine
+ 000000F1  50 72 65 73 73		BYTE "Press any key to close the program.", newLine
 	   20 61 6E 79 20
 	   6B 65 79 20 74
 	   6F 20 63 6C 6F
@@ -136,39 +134,773 @@ main.asm						     Page 1 - 1
 	   65 20 70 72 6F
 	   67 72 61 6D 2E
 	   0D 0A
- 00000128 0000003C		emSize DWORD ($-endMsg)
+ 00000116 0000003C		emSize DWORD ($-endMsg)
 
- 0000012C			pString LABEL BYTE
- 0000012C  3E 20 00			BYTE "> ",0
- 0000012F 00000003		pSize DWORD ($-pString)
+ 0000011A			pString LABEL BYTE
+ 0000011A  3E 20 00			BYTE "> ",0
+ 0000011D 00000003		pSize DWORD ($-pString)
 
- 00000133 00000000		bytesWritten DWORD ?
- 00000137 00000000		bytesRead DWORD ?
+ 00000121 00000000		bytesWritten DWORD ?
+ 00000125 00000000		bytesRead DWORD ?
 
- 0000013B 00			charBuf BYTE ?
- 0000013C 00000000		charNum DWORD ?
- 00000140 00000000		tempAddress DWORD ?
+ 00000129 00			charBuf BYTE ?
+ 0000012A 00000000		charNum DWORD ?
+ 0000012E 00000000		tempAddress DWORD ?
 
- 00000144 00000000		startTime DWORD ?
- 00000148 00000000		currTime DWORD ?
- 0000014C 00000000		endTime DWORD ?
+ 00000132 00000000		startTime DWORD ?
+ 00000136 00000000		currTime DWORD ?
+ 0000013A 00000000		endTime DWORD ?
 
- 00000150 00			timeFlag BYTE ?
- 00000151 00			perfectFlag BYTE 0
- 00000152 0000 0000		initPos COORD <0, 0>
- 00000156 0004 0006		perfPos COORD <4, 6>
- 0000015A 0000 0005		scorePos COORD <0, 5>
- 0000015E 0000 000F		endPos COORD <0, 15>
+ 0000013E 00			timeFlag BYTE ?
+ 0000013F 00			perfectFlag BYTE 0
+ 00000140 0000 0000		initPos COORD <0, 0>
+ 00000144 0004 0006		perfPos COORD <4, 6>
+ 00000148 0000 0005		scorePos COORD <0, 5>
+ 0000014C 0000 000F		endPos COORD <0, 15>
 
- 00000162 00000000		charactersWritten DWORD 0
- 00000166 00000000		correctCharacters DWORD 0
- 0000016A 00000000		wordCounter DWORD 0
- 0000016E 00000000		perfectWords DWORD 0
- 00000172 00000000		finalScore DWORD 0
+ 00000150 00000000		charactersWritten DWORD 0
+ 00000154 00000000		correctCharacters DWORD 0
+ 00000158 00000000		wordCounter DWORD 0
+ 0000015C 00000000		perfectWords DWORD 0
+ 00000160 00000000		finalScore DWORD 0
 
- 00000176			buffer LABEL BYTE
- 00000176  74 65 73 74 73		BYTE "tests",0
-	   00
+ 00000164 00000000		wordIndex DWORD 0
+
+ 00000168			buffer LABEL BYTE
+ 00000168  61 62 69 64 65		BYTE "abide",0,0,0
+	   00 00 00
+ 00000170  61 62 6F 75 74		BYTE "about",0,0,0
+	   00 00 00
+ 00000178  61 62 6F 76 65		BYTE "above",0,0,0
+	   00 00 00
+ 00000180  61 64 64 65 64		BYTE "added",0,0,0
+	   00 00 00
+ 00000188  61 66 6F 72 65		BYTE "afore",0,0,0
+	   00 00 00
+ 00000190  61 66 74 65 72		BYTE "after",0,0,0
+	   00 00 00
+ 00000198  61 67 61 69 6E		BYTE "again",0,0,0
+	   00 00 00
+ 000001A0  61 67 65 6E 74		BYTE "agent",0,0,0
+	   00 00 00
+ 000001A8  61 67 6F 6E 79		BYTE "agony",0,0,0
+	   00 00 00
+ 000001B0  61 67 72 65 65		BYTE "agree",0,0,0
+	   00 00 00
+ 000001B8  61 6C 61 72 6D		BYTE "alarm",0,0,0
+	   00 00 00
+ 000001C0  61 6C 69 76 65		BYTE "alive",0,0,0
+	   00 00 00
+ 000001C8  61 6C 6C 6F 77		BYTE "allow",0,0,0
+	   00 00 00
+ 000001D0  61 6C 6F 6E 65		BYTE "alone",0,0,0
+	   00 00 00
+ 000001D8  61 6C 6F 6E 67		BYTE "along",0,0,0
+	   00 00 00
+ 000001E0  61 6D 6F 6E 67		BYTE "among",0,0,0
+	   00 00 00
+ 000001E8  61 6E 67 65 72		BYTE "anger",0,0,0
+	   00 00 00
+ 000001F0  61 6E 67 72 79		BYTE "angry",0,0,0
+	   00 00 00
+ 000001F8  61 70 70 6C 79		BYTE "apply",0,0,0
+	   00 00 00
+ 00000200  61 72 69 73 65		BYTE "arise",0,0,0
+	   00 00 00
+ 00000208  61 72 72 61 79		BYTE "array",0,0,0
+	   00 00 00
+ 00000210  61 73 6B 65 64		BYTE "asked",0,0,0
+	   00 00 00
+ 00000218  61 76 6F 69 64		BYTE "avoid",0,0,0
+	   00 00 00
+ 00000220  62 61 63 6B 73		BYTE "backs",0,0,0
+	   00 00 00
+ 00000228  62 61 6B 65 64		BYTE "baked",0,0,0
+	   00 00 00
+ 00000230  62 61 6C 6C 73		BYTE "balls",0,0,0
+	   00 00 00
+ 00000238  62 61 73 65 64		BYTE "based",0,0,0
+	   00 00 00
+ 00000240  62 65 67 61 6E		BYTE "began",0,0,0
+	   00 00 00
+ 00000248  62 65 67 69 6E		BYTE "begin",0,0,0
+	   00 00 00
+ 00000250  62 65 67 75 6E		BYTE "begun",0,0,0
+	   00 00 00
+ 00000258  62 65 69 6E 67		BYTE "being",0,0,0
+	   00 00 00
+ 00000260  62 65 6C 6F 77		BYTE "below",0,0,0
+	   00 00 00
+ 00000268  62 69 72 64 73		BYTE "birds",0,0,0
+	   00 00 00
+ 00000270  62 6C 61 6D 65		BYTE "blame",0,0,0
+	   00 00 00
+ 00000278  62 6C 6F 77 6E		BYTE "blown",0,0,0
+	   00 00 00
+ 00000280  62 6C 6F 77 73		BYTE "blows",0,0,0
+	   00 00 00
+ 00000288  62 6F 6E 65 73		BYTE "bones",0,0,0
+	   00 00 00
+ 00000290  62 6F 6F 74 73		BYTE "boots",0,0,0
+	   00 00 00
+ 00000298  62 6F 75 67 68		BYTE "bough",0,0,0
+	   00 00 00
+ 000002A0  62 6F 75 6E 64		BYTE "bound",0,0,0
+	   00 00 00
+ 000002A8  62 6F 77 65 64		BYTE "bowed",0,0,0
+	   00 00 00
+ 000002B0  62 6F 78 65 64		BYTE "boxed",0,0,0
+	   00 00 00
+ 000002B8  62 72 61 73 73		BYTE "brass",0,0,0
+	   00 00 00
+ 000002C0  62 72 61 76 65		BYTE "brave",0,0,0
+	   00 00 00
+ 000002C8  62 72 65 61 6B		BYTE "break",0,0,0
+	   00 00 00
+ 000002D0  62 72 69 6E 67		BYTE "bring",0,0,0
+	   00 00 00
+ 000002D8  62 72 6F 6B 65		BYTE "broke",0,0,0
+	   00 00 00
+ 000002E0  62 72 6F 77 6E		BYTE "brown",0,0,0
+	   00 00 00
+ 000002E8  62 75 72 73 74		BYTE "burst",0,0,0
+	   00 00 00
+ 000002F0  63 61 6B 65 73		BYTE "cakes",0,0,0
+	   00 00 00
+ 000002F8  63 61 72 65 73		BYTE "cares",0,0,0
+	   00 00 00
+ 00000300  63 61 72 72 79		BYTE "carry",0,0,0
+	   00 00 00
+ 00000308  63 61 74 63 68		BYTE "catch",0,0,0
+	   00 00 00
+ 00000310  63 61 75 73 65		BYTE "cause",0,0,0
+	   00 00 00
+ 00000318  63 65 61 73 65		BYTE "cease",0,0,0
+	   00 00 00
+ 00000320  63 68 65 61 70		BYTE "cheap",0,0,0
+	   00 00 00
+ 00000328  63 68 65 63 6B		BYTE "check",0,0,0
+	   00 00 00
+ 00000330  63 68 69 65 66		BYTE "chief",0,0,0
+	   00 00 00
+ 00000338  63 68 69 6C 64		BYTE "child",0,0,0
+	   00 00 00
+ 00000340  63 68 6F 6B 65		BYTE "choke",0,0,0
+	   00 00 00
+ 00000348  63 68 6F 73 65		BYTE "chose",0,0,0
+	   00 00 00
+ 00000350  63 69 76 69 6C		BYTE "civil",0,0,0
+	   00 00 00
+ 00000358  63 6C 61 69 6D		BYTE "claim",0,0,0
+	   00 00 00
+ 00000360  63 6C 61 77 73		BYTE "claws",0,0,0
+	   00 00 00
+ 00000368  63 6C 65 61 6E		BYTE "clean",0,0,0
+	   00 00 00
+ 00000370  63 6C 65 61 72		BYTE "clear",0,0,0
+	   00 00 00
+ 00000378  63 6C 69 6D 62		BYTE "climb",0,0,0
+	   00 00 00
+ 00000380  63 6C 6F 63 6B		BYTE "clock",0,0,0
+	   00 00 00
+ 00000388  63 6C 6F 73 65		BYTE "close",0,0,0
+	   00 00 00
+ 00000390  63 6F 61 73 74		BYTE "coast",0,0,0
+	   00 00 00
+ 00000398  63 6F 64 65 73		BYTE "codes",0,0,0
+	   00 00 00
+ 000003A0  63 6F 6D 65 73		BYTE "comes",0,0,0
+	   00 00 00
+ 000003A8  63 6F 73 74 73		BYTE "costs",0,0,0
+	   00 00 00
+ 000003B0  63 6F 75 6C 64		BYTE "could",0,0,0
+	   00 00 00
+ 000003B8  63 6F 75 72 74		BYTE "court",0,0,0
+	   00 00 00
+ 000003C0  63 72 61 73 68		BYTE "crash",0,0,0
+	   00 00 00
+ 000003C8  63 72 65 65 70		BYTE "creep",0,0,0
+	   00 00 00
+ 000003D0  63 72 65 70 74		BYTE "crept",0,0,0
+	   00 00 00
+ 000003D8  63 72 69 65 64		BYTE "cried",0,0,0
+	   00 00 00
+ 000003E0  63 72 69 65 73		BYTE "cries",0,0,0
+	   00 00 00
+ 000003E8  63 72 6F 77 64		BYTE "crowd",0,0,0
+	   00 00 00
+ 000003F0  63 72 6F 77 6E		BYTE "crown",0,0,0
+	   00 00 00
+ 000003F8  63 75 72 6C 73		BYTE "curls",0,0,0
+	   00 00 00
+ 00000400  63 75 72 6C 79		BYTE "curly",0,0,0
+	   00 00 00
+ 00000408  64 61 6E 63 65		BYTE "dance",0,0,0
+	   00 00 00
+ 00000410  64 61 74 65 73		BYTE "dates",0,0,0
+	   00 00 00
+ 00000418  64 65 61 72 73		BYTE "dears",0,0,0
+	   00 00 00
+ 00000420  64 65 6C 61 79		BYTE "delay",0,0,0
+	   00 00 00
+ 00000428  64 6F 69 6E 67		BYTE "doing",0,0,0
+	   00 00 00
+ 00000430  64 6F 6F 72 73		BYTE "doors",0,0,0
+	   00 00 00
+ 00000438  64 6F 75 62 74		BYTE "doubt",0,0,0
+	   00 00 00
+ 00000440  64 72 65 61 6D		BYTE "dream",0,0,0
+	   00 00 00
+ 00000448  64 72 69 65 64		BYTE "dried",0,0,0
+	   00 00 00
+ 00000450  64 72 69 6E 6B		BYTE "drink",0,0,0
+	   00 00 00
+ 00000458  64 72 69 76 65		BYTE "drive",0,0,0
+	   00 00 00
+ 00000460  64 72 75 6E 6B		BYTE "drunk",0,0,0
+	   00 00 00
+ 00000468  65 61 67 65 72		BYTE "eager",0,0,0
+	   00 00 00
+ 00000470  65 61 72 74 68		BYTE "earth",0,0,0
+	   00 00 00
+ 00000478  65 61 74 65 6E		BYTE "eaten",0,0,0
+	   00 00 00
+ 00000480  65 6C 62 6F 77		BYTE "elbow",0,0,0
+	   00 00 00
+ 00000488  65 6C 65 63 74		BYTE "elect",0,0,0
+	   00 00 00
+ 00000490  65 6D 61 69 6C		BYTE "email",0,0,0
+	   00 00 00
+ 00000498  65 6E 6A 6F 79		BYTE "enjoy",0,0,0
+	   00 00 00
+ 000004A0  65 76 65 72 79		BYTE "every",0,0,0
+	   00 00 00
+ 000004A8  65 78 61 63 74		BYTE "exact",0,0,0
+	   00 00 00
+ 000004B0  66 61 63 65 73		BYTE "faces",0,0,0
+	   00 00 00
+ 000004B8  66 61 69 6E 74		BYTE "faint",0,0,0
+	   00 00 00
+ 000004C0  66 61 6E 63 79		BYTE "fancy",0,0,0
+	   00 00 00
+ 000004C8  66 65 74 63 68		BYTE "fetch",0,0,0
+	   00 00 00
+ 000004D0  66 69 65 6C 64		BYTE "field",0,0,0
+	   00 00 00
+ 000004D8  66 69 66 74 68		BYTE "fifth",0,0,0
+	   00 00 00
+ 000004E0  66 69 67 68 74		BYTE "fight",0,0,0
+	   00 00 00
+ 000004E8  66 69 6C 65 73		BYTE "files",0,0,0
+	   00 00 00
+ 000004F0  66 69 6C 6C 73		BYTE "fills",0,0,0
+	   00 00 00
+ 000004F8  66 69 6E 64 73		BYTE "finds",0,0,0
+	   00 00 00
+ 00000500  66 69 72 73 74		BYTE "first",0,0,0
+	   00 00 00
+ 00000508  66 69 78 65 64		BYTE "fixed",0,0,0
+	   00 00 00
+ 00000510  66 6C 61 6D 65		BYTE "flame",0,0,0
+	   00 00 00
+ 00000518  66 6C 6F 63 6B		BYTE "flock",0,0,0
+	   00 00 00
+ 00000520  66 6C 6F 77 6E		BYTE "flown",0,0,0
+	   00 00 00
+ 00000528  66 6C 75 6E 67		BYTE "flung",0,0,0
+	   00 00 00
+ 00000530  66 6F 72 74 68		BYTE "forth",0,0,0
+	   00 00 00
+ 00000538  66 6F 72 74 79		BYTE "forty",0,0,0
+	   00 00 00
+ 00000540  66 6F 75 6E 64		BYTE "found",0,0,0
+	   00 00 00
+ 00000548  66 72 6F 6E 74		BYTE "front",0,0,0
+	   00 00 00
+ 00000550  66 75 6E 6E 79		BYTE "funny",0,0,0
+	   00 00 00
+ 00000558  67 61 6D 65 73		BYTE "games",0,0,0
+	   00 00 00
+ 00000560  67 69 72 6C 73		BYTE "girls",0,0,0
+	   00 00 00
+ 00000568  67 69 76 65 6E		BYTE "given",0,0,0
+	   00 00 00
+ 00000570  67 6C 61 73 73		BYTE "glass",0,0,0
+	   00 00 00
+ 00000578  67 6C 6F 62 65		BYTE "globe",0,0,0
+	   00 00 00
+ 00000580  67 6F 61 6C 73		BYTE "goals",0,0,0
+	   00 00 00
+ 00000588  67 6F 69 6E 67		BYTE "going",0,0,0
+	   00 00 00
+ 00000590  67 72 61 6E 64		BYTE "grand",0,0,0
+	   00 00 00
+ 00000598  67 72 61 6E 74		BYTE "grant",0,0,0
+	   00 00 00
+ 000005A0  67 72 61 73 73		BYTE "grass",0,0,0
+	   00 00 00
+ 000005A8  67 72 61 76 65		BYTE "grave",0,0,0
+	   00 00 00
+ 000005B0  67 72 65 61 74		BYTE "great",0,0,0
+	   00 00 00
+ 000005B8  67 72 65 65 6E		BYTE "green",0,0,0
+	   00 00 00
+ 000005C0  67 72 69 6E 73		BYTE "grins",0,0,0
+	   00 00 00
+ 000005C8  67 72 6F 73 73		BYTE "gross",0,0,0
+	   00 00 00
+ 000005D0  67 72 6F 75 70		BYTE "group",0,0,0
+	   00 00 00
+ 000005D8  67 72 6F 77 6C		BYTE "growl",0,0,0
+	   00 00 00
+ 000005E0  67 72 6F 77 6E		BYTE "grown",0,0,0
+	   00 00 00
+ 000005E8  67 75 61 72 64		BYTE "guard",0,0,0
+	   00 00 00
+ 000005F0  67 75 65 73 73		BYTE "guess",0,0,0
+	   00 00 00
+ 000005F8  68 61 6E 64 73		BYTE "hands",0,0,0
+	   00 00 00
+ 00000600  68 61 70 70 79		BYTE "happy",0,0,0
+	   00 00 00
+ 00000608  68 65 61 64 73		BYTE "heads",0,0,0
+	   00 00 00
+ 00000610  68 65 61 72 64		BYTE "heard",0,0,0
+	   00 00 00
+ 00000618  68 65 61 72 74		BYTE "heart",0,0,0
+	   00 00 00
+ 00000620  68 65 61 76 79		BYTE "heavy",0,0,0
+	   00 00 00
+ 00000628  68 65 65 6C 73		BYTE "heels",0,0,0
+	   00 00 00
+ 00000630  68 6F 75 72 73		BYTE "hours",0,0,0
+	   00 00 00
+ 00000638  68 6F 75 73 65		BYTE "house",0,0,0
+	   00 00 00
+ 00000640  68 75 72 72 79		BYTE "hurry",0,0,0
+	   00 00 00
+ 00000648  6A 75 72 6F 72		BYTE "juror",0,0,0
+	   00 00 00
+ 00000650  6B 69 6C 6C 73		BYTE "kills",0,0,0
+	   00 00 00
+ 00000658  6B 69 6E 67 73		BYTE "kings",0,0,0
+	   00 00 00
+ 00000660  6B 6E 61 76 65		BYTE "knave",0,0,0
+	   00 00 00
+ 00000668  6B 6E 65 65 6C		BYTE "kneel",0,0,0
+	   00 00 00
+ 00000670  6B 6E 65 6C 74		BYTE "knelt",0,0,0
+	   00 00 00
+ 00000678  6B 6E 69 66 65		BYTE "knife",0,0,0
+	   00 00 00
+ 00000680  6B 6E 6F 77 6E		BYTE "known",0,0,0
+	   00 00 00
+ 00000688  6B 6E 6F 77 73		BYTE "knows",0,0,0
+	   00 00 00
+ 00000690  6C 61 62 65 6C		BYTE "label",0,0,0
+	   00 00 00
+ 00000698  6C 61 6D 70 73		BYTE "lamps",0,0,0
+	   00 00 00
+ 000006A0  6C 61 72 67 65		BYTE "large",0,0,0
+	   00 00 00
+ 000006A8  6C 61 74 69 6E		BYTE "latin",0,0,0
+	   00 00 00
+ 000006B0  6C 65 61 6E 74		BYTE "leant",0,0,0
+	   00 00 00
+ 000006B8  6C 65 61 72 6E		BYTE "learn",0,0,0
+	   00 00 00
+ 000006C0  6C 65 61 73 74		BYTE "least",0,0,0
+	   00 00 00
+ 000006C8  6C 65 61 76 65		BYTE "leave",0,0,0
+	   00 00 00
+ 000006D0  6C 65 64 67 65		BYTE "ledge",0,0,0
+	   00 00 00
+ 000006D8  6C 65 67 61 6C		BYTE "legal",0,0,0
+	   00 00 00
+ 000006E0  6C 69 6B 65 64		BYTE "liked",0,0,0
+	   00 00 00
+ 000006E8  6C 69 6D 62 73		BYTE "limbs",0,0,0
+	   00 00 00
+ 000006F0  6C 69 6E 6B 73		BYTE "links",0,0,0
+	   00 00 00
+ 000006F8  6C 69 76 65 64		BYTE "lived",0,0,0
+	   00 00 00
+ 00000700  6C 69 76 65 73		BYTE "lives",0,0,0
+	   00 00 00
+ 00000708  6C 6F 63 6B 73		BYTE "locks",0,0,0
+	   00 00 00
+ 00000710  6C 6F 6F 73 65		BYTE "loose",0,0,0
+	   00 00 00
+ 00000718  6C 79 69 6E 67		BYTE "lying",0,0,0
+	   00 00 00
+ 00000720  6D 61 62 65 6C		BYTE "mabel",0,0,0
+	   00 00 00
+ 00000728  6D 61 67 69 63		BYTE "magic",0,0,0
+	   00 00 00
+ 00000730  6D 61 6B 65 73		BYTE "makes",0,0,0
+	   00 00 00
+ 00000738  6D 61 72 63 68		BYTE "march",0,0,0
+	   00 00 00
+ 00000740  6D 65 61 6E 73		BYTE "means",0,0,0
+	   00 00 00
+ 00000748  6D 65 61 6E 74		BYTE "meant",0,0,0
+	   00 00 00
+ 00000750  6D 69 67 68 74		BYTE "might",0,0,0
+	   00 00 00
+ 00000758  6D 69 6C 65 73		BYTE "miles",0,0,0
+	   00 00 00
+ 00000760  6D 69 78 65 64		BYTE "mixed",0,0,0
+	   00 00 00
+ 00000768  6D 6F 6E 65 79		BYTE "money",0,0,0
+	   00 00 00
+ 00000770  6D 6F 6E 74 68		BYTE "month",0,0,0
+	   00 00 00
+ 00000778  6D 6F 72 61 6C		BYTE "moral",0,0,0
+	   00 00 00
+ 00000780  6D 6F 75 73 65		BYTE "mouse",0,0,0
+	   00 00 00
+ 00000788  6D 6F 75 74 68		BYTE "mouth",0,0,0
+	   00 00 00
+ 00000790  6D 6F 76 65 64		BYTE "moved",0,0,0
+	   00 00 00
+ 00000798  6E 61 6D 65 73		BYTE "names",0,0,0
+	   00 00 00
+ 000007A0  6E 65 65 64 73		BYTE "needs",0,0,0
+	   00 00 00
+ 000007A8  6E 65 76 65 72		BYTE "never",0,0,0
+	   00 00 00
+ 000007B0  6E 69 67 68 74		BYTE "night",0,0,0
+	   00 00 00
+ 000007B8  6E 6F 69 73 65		BYTE "noise",0,0,0
+	   00 00 00
+ 000007C0  6E 6F 72 74 68		BYTE "north",0,0,0
+	   00 00 00
+ 000007C8  6E 75 72 73 65		BYTE "nurse",0,0,0
+	   00 00 00
+ 000007D0  6F 66 66 65 72		BYTE "offer",0,0,0
+	   00 00 00
+ 000007D8  6F 66 74 65 6E		BYTE "often",0,0,0
+	   00 00 00
+ 000007E0  6F 6C 64 65 72		BYTE "older",0,0,0
+	   00 00 00
+ 000007E8  6F 72 64 65 72		BYTE "order",0,0,0
+	   00 00 00
+ 000007F0  6F 74 68 65 72		BYTE "other",0,0,0
+	   00 00 00
+ 000007F8  6F 75 67 68 74		BYTE "ought",0,0,0
+	   00 00 00
+ 00000800  6F 77 6E 65 72		BYTE "owner",0,0,0
+	   00 00 00
+ 00000808  70 61 67 65 73		BYTE "pages",0,0,0
+	   00 00 00
+ 00000810  70 61 69 6E 74		BYTE "paint",0,0,0
+	   00 00 00
+ 00000818  70 61 69 72 73		BYTE "pairs",0,0,0
+	   00 00 00
+ 00000820  70 61 70 65 72		BYTE "paper",0,0,0
+	   00 00 00
+ 00000828  70 61 72 69 73		BYTE "paris",0,0,0
+	   00 00 00
+ 00000830  70 61 72 74 73		BYTE "parts",0,0,0
+	   00 00 00
+ 00000838  70 61 72 74 79		BYTE "party",0,0,0
+	   00 00 00
+ 00000840  70 69 65 63 65		BYTE "piece",0,0,0
+	   00 00 00
+ 00000848  70 69 6E 63 68		BYTE "pinch",0,0,0
+	   00 00 00
+ 00000850  70 6C 61 63 65		BYTE "place",0,0,0
+	   00 00 00
+ 00000858  70 6C 61 74 65		BYTE "plate",0,0,0
+	   00 00 00
+ 00000860  70 6F 6B 65 72		BYTE "poker",0,0,0
+	   00 00 00
+ 00000868  70 72 69 6E 74		BYTE "print",0,0,0
+	   00 00 00
+ 00000870  70 72 69 7A 65		BYTE "prize",0,0,0
+	   00 00 00
+ 00000878  70 72 6F 75 64		BYTE "proud",0,0,0
+	   00 00 00
+ 00000880  70 72 6F 76 65		BYTE "prove",0,0,0
+	   00 00 00
+ 00000888  70 75 70 70 79		BYTE "puppy",0,0,0
+	   00 00 00
+ 00000890  71 75 65 65 6E		BYTE "queen",0,0,0
+	   00 00 00
+ 00000898  71 75 65 65 72		BYTE "queer",0,0,0
+	   00 00 00
+ 000008A0  71 75 69 63 6B		BYTE "quick",0,0,0
+	   00 00 00
+ 000008A8  71 75 69 65 74		BYTE "quiet",0,0,0
+	   00 00 00
+ 000008B0  71 75 69 74 65		BYTE "quite",0,0,0
+	   00 00 00
+ 000008B8  72 61 76 65 6E		BYTE "raven",0,0,0
+	   00 00 00
+ 000008C0  72 65 61 63 68		BYTE "reach",0,0,0
+	   00 00 00
+ 000008C8  72 65 61 64 79		BYTE "ready",0,0,0
+	   00 00 00
+ 000008D0  72 65 70 6C 79		BYTE "reply",0,0,0
+	   00 00 00
+ 000008D8  72 69 64 67 65		BYTE "ridge",0,0,0
+	   00 00 00
+ 000008E0  72 69 67 68 74		BYTE "right",0,0,0
+	   00 00 00
+ 000008E8  72 69 70 65 72		BYTE "riper",0,0,0
+	   00 00 00
+ 000008F0  72 69 73 65 73		BYTE "rises",0,0,0
+	   00 00 00
+ 000008F8  72 6F 61 73 74		BYTE "roast",0,0,0
+	   00 00 00
+ 00000900  72 6F 6F 74 73		BYTE "roots",0,0,0
+	   00 00 00
+ 00000908  72 6F 73 65 73		BYTE "roses",0,0,0
+	   00 00 00
+ 00000910  72 6F 75 6E 64		BYTE "round",0,0,0
+	   00 00 00
+ 00000918  72 6F 79 61 6C		BYTE "royal",0,0,0
+	   00 00 00
+ 00000920  72 75 6C 65 73		BYTE "rules",0,0,0
+	   00 00 00
+ 00000928  73 61 64 6C 79		BYTE "sadly",0,0,0
+	   00 00 00
+ 00000930  73 61 6E 64 73		BYTE "sands",0,0,0
+	   00 00 00
+ 00000938  73 61 76 65 73		BYTE "saves",0,0,0
+	   00 00 00
+ 00000940  73 63 61 6C 79		BYTE "scaly",0,0,0
+	   00 00 00
+ 00000948  73 65 65 6D 73		BYTE "seems",0,0,0
+	   00 00 00
+ 00000950  73 65 6E 64 73		BYTE "sends",0,0,0
+	   00 00 00
+ 00000958  73 65 6E 73 65		BYTE "sense",0,0,0
+	   00 00 00
+ 00000960  73 65 76 65 6E		BYTE "seven",0,0,0
+	   00 00 00
+ 00000968  73 68 61 6B 65		BYTE "shake",0,0,0
+	   00 00 00
+ 00000970  73 68 61 6C 6C		BYTE "shall",0,0,0
+	   00 00 00
+ 00000978  73 68 61 70 65		BYTE "shape",0,0,0
+	   00 00 00
+ 00000980  73 68 61 72 65		BYTE "share",0,0,0
+	   00 00 00
+ 00000988  73 68 61 72 70		BYTE "sharp",0,0,0
+	   00 00 00
+ 00000990  73 68 6F 63 6B		BYTE "shock",0,0,0
+	   00 00 00
+ 00000998  73 68 6F 65 73		BYTE "shoes",0,0,0
+	   00 00 00
+ 000009A0  73 68 6F 6F 6B		BYTE "shook",0,0,0
+	   00 00 00
+ 000009A8  73 68 6F 72 74		BYTE "short",0,0,0
+	   00 00 00
+ 000009B0  73 69 64 65 73		BYTE "sides",0,0,0
+	   00 00 00
+ 000009B8  73 69 67 68 74		BYTE "sight",0,0,0
+	   00 00 00
+ 000009C0  73 69 6E 63 65		BYTE "since",0,0,0
+	   00 00 00
+ 000009C8  73 69 7A 65 73		BYTE "sizes",0,0,0
+	   00 00 00
+ 000009D0  73 6C 61 74 65		BYTE "slate",0,0,0
+	   00 00 00
+ 000009D8  73 6C 65 65 70		BYTE "sleep",0,0,0
+	   00 00 00
+ 000009E0  73 6D 61 6C 6C		BYTE "small",0,0,0
+	   00 00 00
+ 000009E8  73 6D 6F 6B 65		BYTE "smoke",0,0,0
+	   00 00 00
+ 000009F0  73 6E 61 69 6C		BYTE "snail",0,0,0
+	   00 00 00
+ 000009F8  73 6E 6F 75 74		BYTE "snout",0,0,0
+	   00 00 00
+ 00000A00  73 6F 6C 69 64		BYTE "solid",0,0,0
+	   00 00 00
+ 00000A08  73 6F 72 72 79		BYTE "sorry",0,0,0
+	   00 00 00
+ 00000A10  73 6F 72 74 73		BYTE "sorts",0,0,0
+	   00 00 00
+ 00000A18  73 6F 75 6E 64		BYTE "sound",0,0,0
+	   00 00 00
+ 00000A20  73 70 65 61 6B		BYTE "speak",0,0,0
+	   00 00 00
+ 00000A28  73 70 65 65 64		BYTE "speed",0,0,0
+	   00 00 00
+ 00000A30  73 70 65 6C 6C		BYTE "spell",0,0,0
+	   00 00 00
+ 00000A38  73 70 69 74 65		BYTE "spite",0,0,0
+	   00 00 00
+ 00000A40  73 70 6F 6B 65		BYTE "spoke",0,0,0
+	   00 00 00
+ 00000A48  73 70 6F 6F 6E		BYTE "spoon",0,0,0
+	   00 00 00
+ 00000A50  73 74 61 6C 6B		BYTE "stalk",0,0,0
+	   00 00 00
+ 00000A58  73 74 61 6E 64		BYTE "stand",0,0,0
+	   00 00 00
+ 00000A60  73 74 61 72 74		BYTE "start",0,0,0
+	   00 00 00
+ 00000A68  73 74 61 74 65		BYTE "state",0,0,0
+	   00 00 00
+ 00000A70  73 74 61 79 73		BYTE "stays",0,0,0
+	   00 00 00
+ 00000A78  73 74 69 6C 6C		BYTE "still",0,0,0
+	   00 00 00
+ 00000A80  73 74 6F 6C 65		BYTE "stole",0,0,0
+	   00 00 00
+ 00000A88  73 74 6F 6F 64		BYTE "stood",0,0,0
+	   00 00 00
+ 00000A90  73 74 6F 6F 6C		BYTE "stool",0,0,0
+	   00 00 00
+ 00000A98  73 74 6F 6F 70		BYTE "stoop",0,0,0
+	   00 00 00
+ 00000AA0  73 74 6F 72 79		BYTE "story",0,0,0
+	   00 00 00
+ 00000AA8  73 74 75 66 66		BYTE "stuff",0,0,0
+	   00 00 00
+ 00000AB0  73 75 67 61 72		BYTE "sugar",0,0,0
+	   00 00 00
+ 00000AB8  73 75 6C 6B 79		BYTE "sulky",0,0,0
+	   00 00 00
+ 00000AC0  73 77 61 6D 70		BYTE "swamp",0,0,0
+	   00 00 00
+ 00000AC8  74 61 62 6C 65		BYTE "table",0,0,0
+	   00 00 00
+ 00000AD0  74 61 69 6C 73		BYTE "tails",0,0,0
+	   00 00 00
+ 00000AD8  74 61 6B 65 6E		BYTE "taken",0,0,0
+	   00 00 00
+ 00000AE0  74 61 6B 65 73		BYTE "takes",0,0,0
+	   00 00 00
+ 00000AE8  74 61 72 74 73		BYTE "tarts",0,0,0
+	   00 00 00
+ 00000AF0  74 61 73 74 65		BYTE "taste",0,0,0
+	   00 00 00
+ 00000AF8  74 65 61 72 73		BYTE "tears",0,0,0
+	   00 00 00
+ 00000B00  74 65 6C 6C 73		BYTE "tells",0,0,0
+	   00 00 00
+ 00000B08  74 65 72 6D 73		BYTE "terms",0,0,0
+	   00 00 00
+ 00000B10  74 65 78 74 73		BYTE "texts",0,0,0
+	   00 00 00
+ 00000B18  74 68 61 6E 6B		BYTE "thank",0,0,0
+	   00 00 00
+ 00000B20  74 68 65 69 72		BYTE "their",0,0,0
+	   00 00 00
+ 00000B28  74 68 65 72 65		BYTE "there",0,0,0
+	   00 00 00
+ 00000B30  74 68 65 73 65		BYTE "these",0,0,0
+	   00 00 00
+ 00000B38  74 68 69 63 6B		BYTE "thick",0,0,0
+	   00 00 00
+ 00000B40  74 68 69 6E 67		BYTE "thing",0,0,0
+	   00 00 00
+ 00000B48  74 68 69 6E 6B		BYTE "think",0,0,0
+	   00 00 00
+ 00000B50  74 68 6F 73 65		BYTE "those",0,0,0
+	   00 00 00
+ 00000B58  74 68 72 65 65		BYTE "three",0,0,0
+	   00 00 00
+ 00000B60  74 68 72 65 77		BYTE "threw",0,0,0
+	   00 00 00
+ 00000B68  74 68 72 6F 77		BYTE "throw",0,0,0
+	   00 00 00
+ 00000B70  74 69 67 68 74		BYTE "tight",0,0,0
+	   00 00 00
+ 00000B78  74 69 6D 65 73		BYTE "times",0,0,0
+	   00 00 00
+ 00000B80  74 69 6D 69 64		BYTE "timid",0,0,0
+	   00 00 00
+ 00000B88  74 69 72 65 64		BYTE "tired",0,0,0
+	   00 00 00
+ 00000B90  74 6F 6E 65 73		BYTE "tones",0,0,0
+	   00 00 00
+ 00000B98  74 6F 75 63 68		BYTE "touch",0,0,0
+	   00 00 00
+ 00000BA0  74 72 65 65 73		BYTE "trees",0,0,0
+	   00 00 00
+ 00000BA8  74 72 69 61 6C		BYTE "trial",0,0,0
+	   00 00 00
+ 00000BB0  74 72 69 65 64		BYTE "tried",0,0,0
+	   00 00 00
+ 00000BB8  74 72 69 6D 73		BYTE "trims",0,0,0
+	   00 00 00
+ 00000BC0  74 75 72 6E 73		BYTE "turns",0,0,0
+	   00 00 00
+ 00000BC8  74 77 69 63 65		BYTE "twice",0,0,0
+	   00 00 00
+ 00000BD0  74 77 69 73 74		BYTE "twist",0,0,0
+	   00 00 00
+ 00000BD8  74 79 70 65 73		BYTE "types",0,0,0
+	   00 00 00
+ 00000BE0  75 6E 64 65 72		BYTE "under",0,0,0
+	   00 00 00
+ 00000BE8  75 6E 74 69 6C		BYTE "until",0,0,0
+	   00 00 00
+ 00000BF0  75 70 73 65 74		BYTE "upset",0,0,0
+	   00 00 00
+ 00000BF8  75 73 69 6E 67		BYTE "using",0,0,0
+	   00 00 00
+ 00000C00  75 73 75 61 6C		BYTE "usual",0,0,0
+	   00 00 00
+ 00000C08  76 61 67 75 65		BYTE "vague",0,0,0
+	   00 00 00
+ 00000C10  76 65 72 73 65		BYTE "verse",0,0,0
+	   00 00 00
+ 00000C18  76 69 73 69 74		BYTE "visit",0,0,0
+	   00 00 00
+ 00000C20  76 6F 69 63 65		BYTE "voice",0,0,0
+	   00 00 00
+ 00000C28  77 61 6C 6B 73		BYTE "walks",0,0,0
+	   00 00 00
+ 00000C30  77 61 6E 74 73		BYTE "wants",0,0,0
+	   00 00 00
+ 00000C38  77 61 73 74 65		BYTE "waste",0,0,0
+	   00 00 00
+ 00000C40  77 61 74 63 68		BYTE "watch",0,0,0
+	   00 00 00
+ 00000C48  77 61 74 65 72		BYTE "water",0,0,0
+	   00 00 00
+ 00000C50  77 68 65 72 65		BYTE "where",0,0,0
+	   00 00 00
+ 00000C58  77 68 69 63 68		BYTE "which",0,0,0
+	   00 00 00
+ 00000C60  77 68 69 6C 65		BYTE "while",0,0,0
+	   00 00 00
+ 00000C68  77 68 69 74 65		BYTE "white",0,0,0
+	   00 00 00
+ 00000C70  77 68 6F 6C 65		BYTE "whole",0,0,0
+	   00 00 00
+ 00000C78  77 68 6F 73 65		BYTE "whose",0,0,0
+	   00 00 00
+ 00000C80  77 6F 72 64 73		BYTE "words",0,0,0
+	   00 00 00
+ 00000C88  77 6F 72 6B 73		BYTE "works",0,0,0
+	   00 00 00
+ 00000C90  77 6F 72 6C 64		BYTE "world",0,0,0
+	   00 00 00
+ 00000C98  77 6F 72 72 79		BYTE "worry",0,0,0
+	   00 00 00
+ 00000CA0  77 6F 72 73 65		BYTE "worse",0,0,0
+	   00 00 00
+ 00000CA8  77 6F 72 74 68		BYTE "worth",0,0,0
+	   00 00 00
+ 00000CB0  77 6F 75 6C 64		BYTE "would",0,0,0
+	   00 00 00
+ 00000CB8  77 72 69 74 65		BYTE "write",0,0,0
+	   00 00 00
+ 00000CC0  77 72 6F 6E 67		BYTE "wrong",0,0,0
+	   00 00 00
+ 00000CC8  77 72 6F 74 65		BYTE "wrote",0,0,0
+	   00 00 00
+ 00000CD0  79 61 72 64 73		BYTE "yards",0,0,0
+	   00 00 00
+ 00000CD8  79 6F 75 6E 67		BYTE "young",0,0,0
+	   00 00 00
 
  00000000			.code
  00000000			charPrompt PROC
@@ -186,61 +918,61 @@ main.asm						     Page 1 - 1
  00000014  3C 41			CMP AL, 'A'
  00000016  72 E9			JB promptLoop ; Before the letters, not a letter.
  00000018			checkClear:
- 00000018  A2 0000013B R		mov charBuf, AL	
+ 00000018  A2 00000129 R		mov charBuf, AL	
  0000001D  61				popad
  0000001E  C3				ret
  0000001F			charPrompt ENDP
 
  0000001F			scoreCard PROC
- 0000017C				.data
- 0000017C 43 68 61 72 61		charString BYTE "Characters, Correct / Typed - ",0
+ 00000CE0				.data
+ 00000CE0 43 68 61 72 61		charString BYTE "Characters, Correct / Typed - ",0
 	   63 74 65 72 73
 	   2C 20 43 6F 72
 	   72 65 63 74 20
 	   2F 20 54 79 70
 	   65 64 20 2D 20
 	   00
- 0000019B 57 6F 72 64 73		wordString BYTE "Words, Perfected / Finished - ",0
+ 00000CFF 57 6F 72 64 73		wordString BYTE "Words, Perfected / Finished - ",0
 	   2C 20 50 65 72
 	   66 65 63 74 65
 	   64 20 2F 20 46
 	   69 6E 69 73 68
 	   65 64 20 2D 20
 	   00
- 000001BA 59 4F 55 52 20		scoreString BYTE "YOUR FINAL SCORE IS... ",0
+ 00000D1E 59 4F 55 52 20		scoreString BYTE "YOUR FINAL SCORE IS... ",0
 	   46 49 4E 41 4C
 	   20 53 43 4F 52
 	   45 20 49 53 2E
 	   2E 2E 20 00
- 000001D2 0D 0A 00			line BYTE newLine,0
+ 00000D36 0D 0A 00			line BYTE newLine,0
  0000001F				.code
  0000001F  60				pushad
- 00000020  BA 0000017C R		MOV EDX, OFFSET charString
+ 00000020  BA 00000CE0 R		MOV EDX, OFFSET charString
  00000025  E8 00000000 E		CALL WriteString
- 0000002A  A1 00000166 R		MOV EAX, correctCharacters
+ 0000002A  A1 00000154 R		MOV EAX, correctCharacters
  0000002F  E8 00000000 E		CALL WriteDec
  00000034  B0 2F			MOV AL, "/"
  00000036  E8 00000000 E		CALL WriteChar
- 0000003B  A1 00000162 R		MOV EAX, charactersWritten
+ 0000003B  A1 00000150 R		MOV EAX, charactersWritten
  00000040  E8 00000000 E		CALL WriteDec
- 00000045  BA 000001D2 R		MOV EDX, OFFSET line
+ 00000045  BA 00000D36 R		MOV EDX, OFFSET line
  0000004A  E8 00000000 E		CALL WriteString
 
- 0000004F  BA 0000019B R		MOV EDX, OFFSET wordString
+ 0000004F  BA 00000CFF R		MOV EDX, OFFSET wordString
  00000054  E8 00000000 E		CALL WriteString
- 00000059  A1 0000016E R		MOV EAX, perfectWords
+ 00000059  A1 0000015C R		MOV EAX, perfectWords
  0000005E  D1 E8			SHR EAX, 1
  00000060  E8 00000000 E		CALL WriteDec
  00000065  B0 2F			MOV AL, "/"
  00000067  E8 00000000 E		CALL WriteChar
- 0000006C  A1 0000016A R		MOV EAX, wordCounter
+ 0000006C  A1 00000158 R		MOV EAX, wordCounter
  00000071  E8 00000000 E		CALL WriteDec
- 00000076  BA 000001D2 R		MOV EDX, OFFSET line
+ 00000076  BA 00000D36 R		MOV EDX, OFFSET line
  0000007B  E8 00000000 E		CALL WriteString	
 
- 00000080  BA 000001BA R		MOV EDX, OFFSET scoreString
+ 00000080  BA 00000D1E R		MOV EDX, OFFSET scoreString
  00000085  E8 00000000 E		CALL WriteString
- 0000008A  A1 00000172 R		MOV EAX, finalScore
+ 0000008A  A1 00000160 R		MOV EAX, finalScore
  0000008F  E8 00000000 E		CALL WriteDec
  00000094  61				popad
  00000095  C3				ret
@@ -265,8 +997,8 @@ main.asm						     Page 1 - 1
  000000B7  60		     1		pushad
  000000B8  6A 00	   *	    push   +000000000h
  000000BA  6A 00	   *	    push   +000000000h
- 000000BC  FF 35 00000081 R *	    push   msgSize
- 000000C2  68 0000001A R   *	    push   OFFSET testMsg
+ 000000BC  FF 35 0000006F R *	    push   msgSize
+ 000000C2  68 00000008 R   *	    push   OFFSET testMsg
  000000C7  FF 35 00000004 R *	    push   outputHandler
  000000CD  E8 00000000 E   *	    call   WriteConsoleA
  000000D2  61		     1		popad
@@ -274,188 +1006,195 @@ main.asm						     Page 1 - 1
  000000D3  60		     1		pushad
  000000D4  6A 00	   *	    push   +000000000h
  000000D6  6A 00	   *	    push   +000000000h
- 000000D8  FF 35 0000012F R *	    push   pSize
- 000000DE  68 0000012C R   *	    push   OFFSET pString
+ 000000D8  FF 35 0000011D R *	    push   pSize
+ 000000DE  68 0000011A R   *	    push   OFFSET pString
  000000E3  FF 35 00000004 R *	    push   outputHandler
  000000E9  E8 00000000 E   *	    call   WriteConsoleA
  000000EE  61		     1		popad
  000000EF  E8 00000000 E		call ReadChar
 
  000000F4  E8 00000000 E		call GetMseconds
- 000000F9  A3 00000148 R		MOV currTime, EAX
- 000000FE  A3 00000144 R		MOV startTime, EAX
+ 000000F9  A3 00000136 R		MOV currTime, EAX
+ 000000FE  A3 00000132 R		MOV startTime, EAX
  00000103  05 00002710			ADD EAX, (10 * 1000)
- 00000108  A3 0000014C R		MOV endTime, EAX
+ 00000108  A3 0000013A R		MOV endTime, EAX
 
  0000010D  E8 00000000 E		call ClrScr
  00000112			gameLoop:
- 00000112  EB 29			jmp preparation
+ 00000112  EB 2D			jmp preparation
  00000114			charLoop:
- 00000114  E9 000000E5			jmp gameplay
+ 00000114  E9 000000FD			jmp gameplay
  00000119			endcharLoop:
- 00000119  FF 05 0000013C R		inc charNum
+ 00000119  FF 05 0000012A R		inc charNum
  0000011F  E2 F3			LOOP charLoop
  00000121  E8 00000000 E		call ClrScr
- 00000126  80 3D 00000151 R		CMP perfectFlag, 1
+ 00000126  80 3D 0000013F R		CMP perfectFlag, 1
 	   01
- 0000012D  74 70			JE perfectWord
- 0000012F			backToIt:
- 0000012F  B9 00000002			MOV ECX, 2
- 00000134  83 05 0000016A R		ADD wordCounter, 1
+ 0000012D  0F 84 00000084		JE perfectWord
+ 00000133			backToIt:
+ 00000133  B9 00000002			MOV ECX, 2
+ 00000138  83 05 00000158 R		ADD wordCounter, 1
 	   01
- 0000013B  E2 D5			LOOP gameLoop
+ 0000013F  E2 D1			LOOP gameLoop
 
- 0000013D			preparation:
+ 00000141			preparation:
 					; TODO figure out how to pick a random word
+ 00000141  B8 0000016F			MOV EAX, 367
+ 00000146  E8 00000000 E		call RandomRange
+ 0000014B  C1 E0 03			SHL EAX, 3
+ 0000014E  A3 00000164 R		MOV wordIndex, EAX
 					printMe wordMsg, wmSize
- 0000013D  60		     1		pushad
- 0000013E  6A 00	   *	    push   +000000000h
- 00000140  6A 00	   *	    push   +000000000h
- 00000142  FF 35 0000009C R *	    push   wmSize
- 00000148  68 00000085 R   *	    push   OFFSET wordMsg
- 0000014D  FF 35 00000004 R *	    push   outputHandler
- 00000153  E8 00000000 E   *	    call   WriteConsoleA
- 00000158  61		     1		popad
- 00000159  BA 00000176 R		mov EDX, OFFSET buffer
- 0000015E  E8 00000000 E		call WriteString
- 00000163  B9 00000005			MOV ECX, 5
- 00000168  C7 05 0000013C R		MOV charNum, 0
+ 00000153  60		     1		pushad
+ 00000154  6A 00	   *	    push   +000000000h
+ 00000156  6A 00	   *	    push   +000000000h
+ 00000158  FF 35 0000008A R *	    push   wmSize
+ 0000015E  68 00000073 R   *	    push   OFFSET wordMsg
+ 00000163  FF 35 00000004 R *	    push   outputHandler
+ 00000169  E8 00000000 E   *	    call   WriteConsoleA
+ 0000016E  61		     1		popad
+ 0000016F  BA 00000168 R		mov EDX, OFFSET buffer
+ 00000174  03 D0			add EDX, EAX
+ 00000176  E8 00000000 E		call WriteString
+ 0000017B  B9 00000005			MOV ECX, 5
+ 00000180  C7 05 0000012A R		MOV charNum, 0
 	   00000000
- 00000172  C6 05 00000151 R		MOV perfectFlag, 1
+ 0000018A  C6 05 0000013F R		MOV perfectFlag, 1
 	   01
- 00000179  E8 00000000 E		call Crlf
+ 00000191  E8 00000000 E		call Crlf
 					printMe pString, pSize
- 0000017E  60		     1		pushad
- 0000017F  6A 00	   *	    push   +000000000h
- 00000181  6A 00	   *	    push   +000000000h
- 00000183  FF 35 0000012F R *	    push   pSize
- 00000189  68 0000012C R   *	    push   OFFSET pString
- 0000018E  FF 35 00000004 R *	    push   outputHandler
- 00000194  E8 00000000 E   *	    call   WriteConsoleA
- 00000199  61		     1		popad
- 0000019A  E9 FFFFFF75			jmp charLoop
+ 00000196  60		     1		pushad
+ 00000197  6A 00	   *	    push   +000000000h
+ 00000199  6A 00	   *	    push   +000000000h
+ 0000019B  FF 35 0000011D R *	    push   pSize
+ 000001A1  68 0000011A R   *	    push   OFFSET pString
+ 000001A6  FF 35 00000004 R *	    push   outputHandler
+ 000001AC  E8 00000000 E   *	    call   WriteConsoleA
+ 000001B1  61		     1		popad
+ 000001B2  E9 FFFFFF5D			jmp charLoop
 
- 0000019F			perfectWord:
- 0000019F  83 05 0000016E R		ADD perfectWords, 2
+ 000001B7			perfectWord:
+ 000001B7  83 05 0000015C R		ADD perfectWords, 2
 	   02
 					moveCursor perfPos
- 000001A6  60		     1		pushad
- 000001A7  FF 35 00000156 R *	    push   dword  ptr perfPos
- 000001AD  FF 35 00000004 R *	    push   outputHandler
- 000001B3  E8 00000000 E   *	    call   SetConsoleCursorPosition
- 000001B8  B8 0000000E			MOV EAX, black*16 + yellow
- 000001BD  E8 00000000 E		call SetTextColor
+ 000001BE  60		     1		pushad
+ 000001BF  FF 35 00000144 R *	    push   dword  ptr perfPos
+ 000001C5  FF 35 00000004 R *	    push   outputHandler
+ 000001CB  E8 00000000 E   *	    call   SetConsoleCursorPosition
+ 000001D0  B8 0000000E			MOV EAX, black*16 + yellow
+ 000001D5  E8 00000000 E		call SetTextColor
 					printMe perfMsg, perfSize
- 000001C2  60		     1		pushad
- 000001C3  6A 00	   *	    push   +000000000h
- 000001C5  6A 00	   *	    push   +000000000h
- 000001C7  FF 35 000000BF R *	    push   perfSize
- 000001CD  68 000000A0 R   *	    push   OFFSET perfMsg
- 000001D2  FF 35 00000004 R *	    push   outputHandler
- 000001D8  E8 00000000 E   *	    call   WriteConsoleA
- 000001DD  61		     1		popad
- 000001DE  66| B8 0007			MOV AX, black*16 + lightGray
- 000001E2  E8 00000000 E		call SetTextColor
+ 000001DA  60		     1		pushad
+ 000001DB  6A 00	   *	    push   +000000000h
+ 000001DD  6A 00	   *	    push   +000000000h
+ 000001DF  FF 35 000000AD R *	    push   perfSize
+ 000001E5  68 0000008E R   *	    push   OFFSET perfMsg
+ 000001EA  FF 35 00000004 R *	    push   outputHandler
+ 000001F0  E8 00000000 E   *	    call   WriteConsoleA
+ 000001F5  61		     1		popad
+ 000001F6  66| B8 0007			MOV AX, black*16 + lightGray
+ 000001FA  E8 00000000 E		call SetTextColor
 					moveCursor initPos
- 000001E7  60		     1		pushad
- 000001E8  FF 35 00000152 R *	    push   dword  ptr initPos
- 000001EE  FF 35 00000004 R *	    push   outputHandler
- 000001F4  E8 00000000 E   *	    call   SetConsoleCursorPosition
- 000001F9  E9 FFFFFF31			jmp backToIt
+ 000001FF  60		     1		pushad
+ 00000200  FF 35 00000140 R *	    push   dword  ptr initPos
+ 00000206  FF 35 00000004 R *	    push   outputHandler
+ 0000020C  E8 00000000 E   *	    call   SetConsoleCursorPosition
+ 00000211  E9 FFFFFF1D			jmp backToIt
 
- 000001FE			gameplay:
- 000001FE  E8 FFFFFDFD			call CharPrompt
- 00000203  60				pushad
- 00000204  BE 00000176 R		MOV ESI, OFFSET buffer
- 00000209  03 35 0000013C R		ADD ESI, charNum
- 0000020F  8A 1E			MOV BL, [ESI]
- 00000211  38 1D 0000013B R		CMP charBuf, BL
- 00000217  61				popad
+ 00000216			gameplay:
+ 00000216  E8 FFFFFDE5			call CharPrompt
+ 0000021B  60				pushad
+ 0000021C  A1 00000164 R		MOV EAX, wordIndex
+ 00000221  BE 00000168 R		MOV ESI, OFFSET buffer
+ 00000226  03 F0			ADD ESI, EAX
+ 00000228  03 35 0000012A R		ADD ESI, charNum
+ 0000022E  8A 1E			MOV BL, [ESI]
+ 00000230  38 1D 00000129 R		CMP charBuf, BL
+ 00000236  61				popad
 
- 00000218  75 0D			jne missed
- 0000021A  83 05 00000166 R		ADD correctCharacters, 1
+ 00000237  75 0D			jne missed
+ 00000239  83 05 00000154 R		ADD correctCharacters, 1
 	   01
- 00000221  66| B8 002F			MOV AX, green*16 + white
- 00000225  EB 0B			jmp writing
- 00000227			missed:
- 00000227  C6 05 00000151 R		MOV perfectFlag, 0
+ 00000240  66| B8 002F			MOV AX, green*16 + white
+ 00000244  EB 0B			jmp writing
+ 00000246			missed:
+ 00000246  C6 05 0000013F R		MOV perfectFlag, 0
 	   00
- 0000022E  66| B8 004F			MOV AX, red*16 + white
- 00000232			writing:
- 00000232  E8 00000000 E		call SetTextColor
+ 0000024D  66| B8 004F			MOV AX, red*16 + white
+ 00000251			writing:
+ 00000251  E8 00000000 E		call SetTextColor
 					printMe charBuf, 1
- 00000237  60		     1		pushad
- 00000238  6A 00	   *	    push   +000000000h
- 0000023A  6A 00	   *	    push   +000000000h
- 0000023C  6A 01	   *	    push   +000000001h
- 0000023E  68 0000013B R   *	    push   OFFSET charBuf
- 00000243  FF 35 00000004 R *	    push   outputHandler
- 00000249  E8 00000000 E   *	    call   WriteConsoleA
- 0000024E  61		     1		popad
- 0000024F  83 05 00000162 R		ADD charactersWritten, 1
+ 00000256  60		     1		pushad
+ 00000257  6A 00	   *	    push   +000000000h
+ 00000259  6A 00	   *	    push   +000000000h
+ 0000025B  6A 01	   *	    push   +000000001h
+ 0000025D  68 00000129 R   *	    push   OFFSET charBuf
+ 00000262  FF 35 00000004 R *	    push   outputHandler
+ 00000268  E8 00000000 E   *	    call   WriteConsoleA
+ 0000026D  61		     1		popad
+ 0000026E  83 05 00000150 R		ADD charactersWritten, 1
 	   01
- 00000256  66| B8 0007			MOV AX, black*16 + lightGray
- 0000025A  E8 00000000 E		call SetTextColor
+ 00000275  66| B8 0007			MOV AX, black*16 + lightGray
+ 00000279  E8 00000000 E		call SetTextColor
 					timeCheck
- 0000025F		     1		.code
- 0000025F  56		     1		push ESI
- 00000260  57		     1		push EDI
- 00000261  E8 00000000 E     1		call GetMseconds
- 00000266  A3 00000148 R     1		MOV currTime, EAX
- 0000026B  BE 00000148 R     1		MOV ESI, OFFSET currTime 
- 00000270  BF 0000014C R     1		MOV EDI, OFFSET endTime
- 00000275  A7		     1		CMPSD ; compares the doublewords
- 00000276  5F		     1		pop EDI
- 00000277  5E		     1		pop ESI
- 00000278  7D 05			jge timeUp
- 0000027A  E9 FFFFFE9A			jmp endCharLoop
+ 0000027E		     1		.code
+ 0000027E  56		     1		push ESI
+ 0000027F  57		     1		push EDI
+ 00000280  E8 00000000 E     1		call GetMseconds
+ 00000285  A3 00000136 R     1		MOV currTime, EAX
+ 0000028A  BE 00000136 R     1		MOV ESI, OFFSET currTime 
+ 0000028F  BF 0000013A R     1		MOV EDI, OFFSET endTime
+ 00000294  A7		     1		CMPSD ; compares the doublewords
+ 00000295  5F		     1		pop EDI
+ 00000296  5E		     1		pop ESI
+ 00000297  7D 05			jge timeUp
+ 00000299  E9 FFFFFE7B			jmp endCharLoop
 
- 0000027F			timeUp:
- 0000027F  A1 00000172 R		MOV EAX, finalScore
- 00000284  03 05 00000166 R		ADD EAX, correctCharacters
- 0000028A  03 05 0000016E R		ADD EAX, perfectWords
- 00000290  A3 00000172 R		MOV finalScore, EAX
- 00000295  E8 00000000 E		call ClrScr
+ 0000029E			timeUp:
+ 0000029E  A1 00000160 R		MOV EAX, finalScore
+ 000002A3  03 05 00000154 R		ADD EAX, correctCharacters
+ 000002A9  03 05 0000015C R		ADD EAX, perfectWords
+ 000002AF  A3 00000160 R		MOV finalScore, EAX
+ 000002B4  E8 00000000 E		call ClrScr
 					printMe timeMsg1, tms1
- 0000029A  60		     1		pushad
- 0000029B  6A 00	   *	    push   +000000000h
- 0000029D  6A 00	   *	    push   +000000000h
- 0000029F  FF 35 000000E8 R *	    push   tms1
- 000002A5  68 000000C3 R   *	    push   OFFSET timeMsg1
- 000002AA  FF 35 00000004 R *	    push   outputHandler
- 000002B0  E8 00000000 E   *	    call   WriteConsoleA
- 000002B5  61		     1		popad
- 000002B6  B8 000007D0			MOV EAX, 2000
- 000002BB  E8 00000000 E		call Delay
+ 000002B9  60		     1		pushad
+ 000002BA  6A 00	   *	    push   +000000000h
+ 000002BC  6A 00	   *	    push   +000000000h
+ 000002BE  FF 35 000000D6 R *	    push   tms1
+ 000002C4  68 000000B1 R   *	    push   OFFSET timeMsg1
+ 000002C9  FF 35 00000004 R *	    push   outputHandler
+ 000002CF  E8 00000000 E   *	    call   WriteConsoleA
+ 000002D4  61		     1		popad
+ 000002D5  B8 000007D0			MOV EAX, 2000
+ 000002DA  E8 00000000 E		call Delay
 
 					moveCursor scorePos
- 000002C0  60		     1		pushad
- 000002C1  FF 35 0000015A R *	    push   dword  ptr scorePos
- 000002C7  FF 35 00000004 R *	    push   outputHandler
- 000002CD  E8 00000000 E   *	    call   SetConsoleCursorPosition
- 000002D2  E8 FFFFFD48			call ScoreCard
+ 000002DF  60		     1		pushad
+ 000002E0  FF 35 00000148 R *	    push   dword  ptr scorePos
+ 000002E6  FF 35 00000004 R *	    push   outputHandler
+ 000002EC  E8 00000000 E   *	    call   SetConsoleCursorPosition
+ 000002F1  E8 FFFFFD29			call ScoreCard
 
 					moveCursor endPos
- 000002D7  60		     1		pushad
- 000002D8  FF 35 0000015E R *	    push   dword  ptr endPos
- 000002DE  FF 35 00000004 R *	    push   outputHandler
- 000002E4  E8 00000000 E   *	    call   SetConsoleCursorPosition
+ 000002F6  60		     1		pushad
+ 000002F7  FF 35 0000014C R *	    push   dword  ptr endPos
+ 000002FD  FF 35 00000004 R *	    push   outputHandler
+ 00000303  E8 00000000 E   *	    call   SetConsoleCursorPosition
 					printMe endMsg, emSize
- 000002E9  60		     1		pushad
- 000002EA  6A 00	   *	    push   +000000000h
- 000002EC  6A 00	   *	    push   +000000000h
- 000002EE  FF 35 00000128 R *	    push   emSize
- 000002F4  68 000000EC R   *	    push   OFFSET endMsg
- 000002F9  FF 35 00000004 R *	    push   outputHandler
- 000002FF  E8 00000000 E   *	    call   WriteConsoleA
- 00000304  61		     1		popad
- 00000305  E8 FFFFFCF6			call CharPrompt
+ 00000308  60		     1		pushad
+ 00000309  6A 00	   *	    push   +000000000h
+ 0000030B  6A 00	   *	    push   +000000000h
+ 0000030D  FF 35 00000116 R *	    push   emSize
+ 00000313  68 000000DA R   *	    push   OFFSET endMsg
+ 00000318  FF 35 00000004 R *	    push   outputHandler
+ 0000031E  E8 00000000 E   *	    call   WriteConsoleA
+ 00000323  61		     1		popad
+ 00000324  E8 FFFFFCD7			call CharPrompt
 					exit
- 0000030A  6A 00	   *	    push   +000000000h
- 0000030C  E8 00000000 E   *	    call   ExitProcess
- 00000311			main ENDP
+ 00000329  6A 00	   *	    push   +000000000h
+ 0000032B  E8 00000000 E   *	    call   ExitProcess
+ 00000330			main ENDP
 				END main
-Microsoft (R) Macro Assembler Version 14.29.30159.0	    12/04/25 12:34:15
+Microsoft (R) Macro Assembler Version 14.29.30159.0	    12/04/25 14:04:33
 main.asm						     Symbols 2 - 1
 
 
@@ -558,8 +1297,8 @@ Segments and Groups:
 
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
-_DATA  . . . . . . . . . . . . .	32 Bit	 000001D5 Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 00000311 Para	  Public  'CODE'	
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000D39 Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000330 Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -670,17 +1409,17 @@ charPrompt . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 0000001F Public 
   promptLoop . . . . . . . . . .	L Near	 00000001 _TEXT	
   upCheck  . . . . . . . . . . .	L Near	 00000014 _TEXT	
   checkClear . . . . . . . . . .	L Near	 00000018 _TEXT	
-main . . . . . . . . . . . . . .	P Near	 00000096 _TEXT	Length= 0000027B Public STDCALL
+main . . . . . . . . . . . . . .	P Near	 00000096 _TEXT	Length= 0000029A Public STDCALL
   gameLoop . . . . . . . . . . .	L Near	 00000112 _TEXT	
   charLoop . . . . . . . . . . .	L Near	 00000114 _TEXT	
   endcharLoop  . . . . . . . . .	L Near	 00000119 _TEXT	
-  backToIt . . . . . . . . . . .	L Near	 0000012F _TEXT	
-  preparation  . . . . . . . . .	L Near	 0000013D _TEXT	
-  perfectWord  . . . . . . . . .	L Near	 0000019F _TEXT	
-  gameplay . . . . . . . . . . .	L Near	 000001FE _TEXT	
-  missed . . . . . . . . . . . .	L Near	 00000227 _TEXT	
-  writing  . . . . . . . . . . .	L Near	 00000232 _TEXT	
-  timeUp . . . . . . . . . . . .	L Near	 0000027F _TEXT	
+  backToIt . . . . . . . . . . .	L Near	 00000133 _TEXT	
+  preparation  . . . . . . . . .	L Near	 00000141 _TEXT	
+  perfectWord  . . . . . . . . .	L Near	 000001B7 _TEXT	
+  gameplay . . . . . . . . . . .	L Near	 00000216 _TEXT	
+  missed . . . . . . . . . . . .	L Near	 00000246 _TEXT	
+  writing  . . . . . . . . . . .	L Near	 00000251 _TEXT	
+  timeUp . . . . . . . . . . . .	L Near	 0000029E _TEXT	
 printf . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 scanf  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 scoreCard  . . . . . . . . . . .	P Near	 0000001F _TEXT	Length= 00000077 Public STDCALL
@@ -904,26 +1643,25 @@ WriteConsole . . . . . . . . . .	Text   	 WriteConsoleA
 black  . . . . . . . . . . . . .	Number	 00000000h   
 blue . . . . . . . . . . . . . .	Number	 00000001h   
 brown  . . . . . . . . . . . . .	Number	 00000006h   
-buffer . . . . . . . . . . . . .	Byte	 00000176 _DATA	
-bytesRead  . . . . . . . . . . .	DWord	 00000137 _DATA	
-bytesWritten . . . . . . . . . .	DWord	 00000133 _DATA	
-charBuf  . . . . . . . . . . . .	Byte	 0000013B _DATA	
-charNum  . . . . . . . . . . . .	DWord	 0000013C _DATA	
-charString . . . . . . . . . . .	Byte	 0000017C _DATA	
-charactersWritten  . . . . . . .	DWord	 00000162 _DATA	
-correctCharacters  . . . . . . .	DWord	 00000166 _DATA	
-currTime . . . . . . . . . . . .	DWord	 00000148 _DATA	
+buffer . . . . . . . . . . . . .	Byte	 00000168 _DATA	
+bytesRead  . . . . . . . . . . .	DWord	 00000125 _DATA	
+bytesWritten . . . . . . . . . .	DWord	 00000121 _DATA	
+charBuf  . . . . . . . . . . . .	Byte	 00000129 _DATA	
+charNum  . . . . . . . . . . . .	DWord	 0000012A _DATA	
+charString . . . . . . . . . . .	Byte	 00000CE0 _DATA	
+charactersWritten  . . . . . . .	DWord	 00000150 _DATA	
+correctCharacters  . . . . . . .	DWord	 00000154 _DATA	
+currTime . . . . . . . . . . . .	DWord	 00000136 _DATA	
 cyan . . . . . . . . . . . . . .	Number	 00000003h   
-emSize . . . . . . . . . . . . .	DWord	 00000128 _DATA	
-endMsg . . . . . . . . . . . . .	Byte	 000000EC _DATA	
-endPos . . . . . . . . . . . . .	COORD	 0000015E _DATA	
-endTime  . . . . . . . . . . . .	DWord	 0000014C _DATA	
+emSize . . . . . . . . . . . . .	DWord	 00000116 _DATA	
+endMsg . . . . . . . . . . . . .	Byte	 000000DA _DATA	
+endPos . . . . . . . . . . . . .	COORD	 0000014C _DATA	
+endTime  . . . . . . . . . . . .	DWord	 0000013A _DATA	
 exit . . . . . . . . . . . . . .	Text   	 INVOKE ExitProcess,0
-fileHandler  . . . . . . . . . .	DWord	 00000008 _DATA	
-finalScore . . . . . . . . . . .	DWord	 00000172 _DATA	
+finalScore . . . . . . . . . . .	DWord	 00000160 _DATA	
 gray . . . . . . . . . . . . . .	Number	 00000008h   
 green  . . . . . . . . . . . . .	Number	 00000002h   
-initPos  . . . . . . . . . . . .	COORD	 00000152 _DATA	
+initPos  . . . . . . . . . . . .	COORD	 00000140 _DATA	
 inputHandler . . . . . . . . . .	DWord	 00000000 _DATA	
 lightBlue  . . . . . . . . . . .	Number	 00000009h   
 lightCyan  . . . . . . . . . . .	Number	 0000000Bh   
@@ -931,33 +1669,33 @@ lightGray  . . . . . . . . . . .	Number	 00000007h
 lightGreen . . . . . . . . . . .	Number	 0000000Ah   
 lightMagenta . . . . . . . . . .	Number	 0000000Dh   
 lightRed . . . . . . . . . . . .	Number	 0000000Ch   
-line . . . . . . . . . . . . . .	Byte	 000001D2 _DATA	
+line . . . . . . . . . . . . . .	Byte	 00000D36 _DATA	
 magenta  . . . . . . . . . . . .	Number	 00000005h   
-msgSize  . . . . . . . . . . . .	DWord	 00000081 _DATA	
+msgSize  . . . . . . . . . . . .	DWord	 0000006F _DATA	
 newLine  . . . . . . . . . . . .	Text   	 0dh, 0ah
 outputHandler  . . . . . . . . .	DWord	 00000004 _DATA	
-pSize  . . . . . . . . . . . . .	DWord	 0000012F _DATA	
-pString  . . . . . . . . . . . .	Byte	 0000012C _DATA	
-perfMsg  . . . . . . . . . . . .	Byte	 000000A0 _DATA	
-perfPos  . . . . . . . . . . . .	COORD	 00000156 _DATA	
-perfSize . . . . . . . . . . . .	DWord	 000000BF _DATA	
-perfectFlag  . . . . . . . . . .	Byte	 00000151 _DATA	
-perfectWords . . . . . . . . . .	DWord	 0000016E _DATA	
+pSize  . . . . . . . . . . . . .	DWord	 0000011D _DATA	
+pString  . . . . . . . . . . . .	Byte	 0000011A _DATA	
+perfMsg  . . . . . . . . . . . .	Byte	 0000008E _DATA	
+perfPos  . . . . . . . . . . . .	COORD	 00000144 _DATA	
+perfSize . . . . . . . . . . . .	DWord	 000000AD _DATA	
+perfectFlag  . . . . . . . . . .	Byte	 0000013F _DATA	
+perfectWords . . . . . . . . . .	DWord	 0000015C _DATA	
 red  . . . . . . . . . . . . . .	Number	 00000004h   
-scorePos . . . . . . . . . . . .	COORD	 0000015A _DATA	
-scoreString  . . . . . . . . . .	Byte	 000001BA _DATA	
-startTime  . . . . . . . . . . .	DWord	 00000144 _DATA	
-tempAddress  . . . . . . . . . .	DWord	 00000140 _DATA	
-testMsg  . . . . . . . . . . . .	Byte	 0000001A _DATA	
-timeFlag . . . . . . . . . . . .	Byte	 00000150 _DATA	
-timeMsg1 . . . . . . . . . . . .	Byte	 000000C3 _DATA	
-tms1 . . . . . . . . . . . . . .	DWord	 000000E8 _DATA	
+scorePos . . . . . . . . . . . .	COORD	 00000148 _DATA	
+scoreString  . . . . . . . . . .	Byte	 00000D1E _DATA	
+startTime  . . . . . . . . . . .	DWord	 00000132 _DATA	
+tempAddress  . . . . . . . . . .	DWord	 0000012E _DATA	
+testMsg  . . . . . . . . . . . .	Byte	 00000008 _DATA	
+timeFlag . . . . . . . . . . . .	Byte	 0000013E _DATA	
+timeMsg1 . . . . . . . . . . . .	Byte	 000000B1 _DATA	
+tms1 . . . . . . . . . . . . . .	DWord	 000000D6 _DATA	
 white  . . . . . . . . . . . . .	Number	 0000000Fh   
-wmSize . . . . . . . . . . . . .	DWord	 0000009C _DATA	
-wordCounter  . . . . . . . . . .	DWord	 0000016A _DATA	
-wordFile . . . . . . . . . . . .	Byte	 0000000C _DATA	
-wordMsg  . . . . . . . . . . . .	Byte	 00000085 _DATA	
-wordString . . . . . . . . . . .	Byte	 0000019B _DATA	
+wmSize . . . . . . . . . . . . .	DWord	 0000008A _DATA	
+wordCounter  . . . . . . . . . .	DWord	 00000158 _DATA	
+wordIndex  . . . . . . . . . . .	DWord	 00000164 _DATA	
+wordMsg  . . . . . . . . . . . .	Byte	 00000073 _DATA	
+wordString . . . . . . . . . . .	Byte	 00000CFF _DATA	
 wsprintf . . . . . . . . . . . .	Text   	 wsprintfA
 yellow . . . . . . . . . . . . .	Number	 0000000Eh   
 

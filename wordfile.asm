@@ -1,3 +1,5 @@
+INCLUDE stuff.inc
+
 wordList LABEL BYTE
 	BYTE "abide",0,0,0
 	BYTE "about",0,0,0
