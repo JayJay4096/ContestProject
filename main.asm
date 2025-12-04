@@ -40,9 +40,6 @@ ENDM
 inputHandler HANDLE 0
 outputHandler HANDLE 0
 
-fileHandler HANDLE 0
-wordFile BYTE "quickdict.txt",0
-
 newLine EQU <0dh, 0ah>
 
 testMsg LABEL BYTE
