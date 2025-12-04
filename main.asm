@@ -33,7 +33,7 @@ timeCheck MACRO
 	pop ESI
 ENDM
 
-;color is fore*16 + back
+;color is back*16 + fore
 
 .data
 inputHandler HANDLE 0
@@ -538,6 +538,8 @@ main PROC
 	MOV inputHandler, EAX
 	INVOKE GetStdHandle, STD_OUTPUT_HANDLE
 	MOV outputHandler, EAX
+
+	call Randomize ; make the game actually random
 
 	printMe testMsg, msgSize
 	printMe pString, pSize

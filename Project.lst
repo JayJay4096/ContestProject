@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.29.30159.0	    12/04/25 14:11:47
+Microsoft (R) Macro Assembler Version 14.29.30159.0	    12/04/25 14:40:41
 main.asm						     Page 1 - 1
 
 
@@ -58,7 +58,7 @@ main.asm						     Page 1 - 1
 					pop ESI
 				ENDM
 
-				;color is fore*16 + back
+				;color is back*16 + fore
 
  00000000			.data
  00000000 00000000		inputHandler HANDLE 0
@@ -923,6 +923,11 @@ main.asm						     Page 1 - 1
  0000001E  C3				ret
  0000001F			charPrompt ENDP
 
+				; -----
+				; Score Card Procedure
+				;
+				; This will display your score and statistics for this run of the game.
+				; -----
  0000001F			scoreCard PROC
  00000CE0				.data
  00000CE0 43 68 61 72 61		charString BYTE "Characters, Correct / Typed - ",0
@@ -1012,11 +1017,12 @@ main.asm						     Page 1 - 1
  000000E9  E8 00000000 E   *	    call   WriteConsoleA
  000000EE  61		     1		popad
  000000EF  E8 00000000 E		call ReadChar
+					; this input request pauses the program until the user presses any letter key.
 
  000000F4  E8 00000000 E		call GetMseconds
  000000F9  A3 00000136 R		MOV currTime, EAX
  000000FE  A3 00000132 R		MOV startTime, EAX
- 00000103  05 0000EA60			ADD EAX, (60 * 1000)
+ 00000103  05 0000EA60			ADD EAX, (60 * 1000) ; 60,000 milliseconds, 60 seconds.
  00000108  A3 0000013A R		MOV endTime, EAX
 
  0000010D  E8 00000000 E		call ClrScr
@@ -1026,7 +1032,7 @@ main.asm						     Page 1 - 1
  00000114  E9 000000FD			jmp gameplay
  00000119			endcharLoop:
  00000119  FF 05 0000012A R		inc charNum
- 0000011F  E2 F3			LOOP charLoop
+ 0000011F  E2 F3			LOOP charLoop ; get the next input character until we have all 5
  00000121  E8 00000000 E		call ClrScr
  00000126  80 3D 0000013F R		CMP perfectFlag, 1
 	   01
@@ -1038,11 +1044,14 @@ main.asm						     Page 1 - 1
  0000013F  E2 D1			LOOP gameLoop
 
  00000141			preparation:
-					; TODO figure out how to pick a random word
+					; this randomizer selects one of the words.
+					; randomrange function ripped from the irvine library.
  00000141  B8 0000016F			MOV EAX, 367
  00000146  E8 00000000 E		call RandomRange
  0000014B  C1 E0 03			SHL EAX, 3
- 0000014E  A3 00000164 R		MOV wordIndex, EAX
+ 0000014E  A3 00000164 R		MOV wordIndex, EAX ; store the starting byte of the chosen word
+
+					; this block prints the current word you need to pick.
 					printMe wordMsg, wmSize
  00000153  60		     1		pushad
  00000154  6A 00	   *	    push   +000000000h
@@ -1055,10 +1064,11 @@ main.asm						     Page 1 - 1
  0000016F  BA 00000168 R		mov EDX, OFFSET buffer
  00000174  03 D0			add EDX, EAX
  00000176  E8 00000000 E		call WriteString
- 0000017B  B9 00000005			MOV ECX, 5
- 00000180  C7 05 0000012A R		MOV charNum, 0
+
+ 0000017B  B9 00000005			MOV ECX, 5 ; 5 characters to type
+ 00000180  C7 05 0000012A R		MOV charNum, 0 ; set current character to the first
 	   00000000
- 0000018A  C6 05 0000013F R		MOV perfectFlag, 1
+ 0000018A  C6 05 0000013F R		MOV perfectFlag, 1 ; this goes to 0 if you mess up
 	   01
  00000191  E8 00000000 E		call Crlf
 					printMe pString, pSize
@@ -1072,7 +1082,7 @@ main.asm						     Page 1 - 1
  000001B1  61		     1		popad
  000001B2  E9 FFFFFF5D			jmp charLoop
 
- 000001B7			perfectWord:
+ 000001B7			perfectWord: ; if you get all 5 letters
  000001B7  83 05 0000015C R		ADD perfectWords, 2
 	   02
 					moveCursor perfPos
@@ -1082,7 +1092,7 @@ main.asm						     Page 1 - 1
  000001CB  E8 00000000 E   *	    call   SetConsoleCursorPosition
  000001D0  B8 0000000E			MOV EAX, black*16 + yellow
  000001D5  E8 00000000 E		call SetTextColor
-					printMe perfMsg, perfSize
+					printMe perfMsg, perfSize ; show them an encouraging message
  000001DA  60		     1		pushad
  000001DB  6A 00	   *	    push   +000000000h
  000001DD  6A 00	   *	    push   +000000000h
@@ -1101,25 +1111,30 @@ main.asm						     Page 1 - 1
  00000211  E9 FFFFFF1D			jmp backToIt
 
  00000216			gameplay:
- 00000216  E8 FFFFFDE5			call CharPrompt
+ 00000216  E8 FFFFFDE5			call CharPrompt ; gets an input letter
  0000021B  60				pushad
+					; selects the first letter of the chosen word
  0000021C  A1 00000164 R		MOV EAX, wordIndex
  00000221  BE 00000168 R		MOV ESI, OFFSET buffer
  00000226  03 F0			ADD ESI, EAX
+
+					; selects the letter we actually care about right now
  00000228  03 35 0000012A R		ADD ESI, charNum
  0000022E  8A 1E			MOV BL, [ESI]
+
+					; compares what was input to the actual letter
  00000230  38 1D 00000129 R		CMP charBuf, BL
  00000236  61				popad
 
  00000237  75 0D			jne missed
  00000239  83 05 00000154 R		ADD correctCharacters, 1
 	   01
- 00000240  66| B8 002F			MOV AX, green*16 + white
+ 00000240  66| B8 002F			MOV AX, green*16 + white ; green background, to show that you got it right
  00000244  EB 0B			jmp writing
- 00000246			missed:
+ 00000246			missed: ; wrong letter
  00000246  C6 05 0000013F R		MOV perfectFlag, 0
 	   00
- 0000024D  66| B8 004F			MOV AX, red*16 + white
+ 0000024D  66| B8 004F			MOV AX, red*16 + white ; red background, to show that you made a mistake
  00000251			writing:
  00000251  E8 00000000 E		call SetTextColor
 					printMe charBuf, 1
@@ -1133,9 +1148,9 @@ main.asm						     Page 1 - 1
  0000026D  61		     1		popad
  0000026E  83 05 00000150 R		ADD charactersWritten, 1
 	   01
- 00000275  66| B8 0007			MOV AX, black*16 + lightGray
+ 00000275  66| B8 0007			MOV AX, black*16 + lightGray ; reset text color
  00000279  E8 00000000 E		call SetTextColor
-					timeCheck
+					timeCheck ; check if 60 seconds have passed after this input
  0000027E		     1		.code
  0000027E  56		     1		push ESI
  0000027F  57		     1		push EDI
@@ -1150,10 +1165,12 @@ main.asm						     Page 1 - 1
  00000299  E9 FFFFFE7B			jmp endCharLoop
 
  0000029E			timeUp:
+					; tally up the final score
  0000029E  A1 00000160 R		MOV EAX, finalScore
  000002A3  03 05 00000154 R		ADD EAX, correctCharacters
  000002A9  03 05 0000015C R		ADD EAX, perfectWords
  000002AF  A3 00000160 R		MOV finalScore, EAX
+
  000002B4  E8 00000000 E		call ClrScr
 					printMe timeMsg1, tms1
  000002B9  60		     1		pushad
@@ -1194,7 +1211,7 @@ main.asm						     Page 1 - 1
  0000032B  E8 00000000 E   *	    call   ExitProcess
  00000330			main ENDP
 				END main
-Microsoft (R) Macro Assembler Version 14.29.30159.0	    12/04/25 14:11:47
+Microsoft (R) Macro Assembler Version 14.29.30159.0	    12/04/25 14:40:41
 main.asm						     Symbols 2 - 1
 
 
