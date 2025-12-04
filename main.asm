@@ -20,17 +20,6 @@ moveCursor MACRO coords
 		outputHandler,
 		coords
 ENDM
-
-asciiIncrement MACRO target, value
-	.code
-	pushad
-	MOV AX, target
-	ADD AX, value
-	AAA
-	OR AX, 3030h
-	MOV target, AX
-	popad
-ENDM
     
 timeCheck MACRO
 	.code
@@ -43,17 +32,6 @@ timeCheck MACRO
 	CMPSD ; compares the doublewords
 	pop EDI
 	pop ESI
-ENDM
-
-scoreCard MACRO charCount, goodChars, wordCount, goodWords, score
-	.data
-	charString1 BYTE "Out of the ",charCount," characters you typed, you got ",goodChars," correct.", newLine
-	wordString BYTE "Out of the ",wordCount," words you finished, you did ",goodWords," perfectly.", newLine
-	scoreString BYTE "YOUR FINAL SCORE IS... ",score,"!", newLine
-	.code
-	printMe charString1, LENGTHOF charString1
-	printMe wordString, LENGTHOF wordString
-	printMe scoreString, LENGTHOF scoreString
 ENDM
 
 ;color is fore*16 + back
@@ -94,9 +72,6 @@ pString LABEL BYTE
 	BYTE "> ",0
 pSize DWORD ($-pString)
 
-buffer LABEL BYTE
-	BYTE "tests",0
-
 bytesWritten DWORD ?
 bytesRead DWORD ?
 
@@ -115,20 +90,74 @@ perfPos COORD <4, 6>
 scorePos COORD <0, 5>
 endPos COORD <0, 15>
 
-charactersWritten WORD '0'
-correctCharacters WORD '0'
-wordCounter WORD '0'
-perfectWords WORD '0'
-finalScore WORD '0'
+charactersWritten DWORD 0
+correctCharacters DWORD 0
+wordCounter DWORD 0
+perfectWords DWORD 0
+finalScore DWORD 0
+
+buffer LABEL BYTE
+	BYTE "tests",0
 
 .code
 charPrompt PROC
 	pushad
+promptLoop:
 	call ReadChar
+	CMP AL, 'Z'
+	JBE upCheck ; Check if uppercase letter
+	CMP AL, 'a'
+	JB promptLoop ; In the gap between low-a and cap-Z, not a letter.
+	CMP AL, 'z'
+	JA promptLoop ; After the letters, not a letter.
+	JMP checkClear
+upCheck:
+	CMP AL, 'A'
+	JB promptLoop ; Before the letters, not a letter.
+checkClear:
 	mov charBuf, AL	
 	popad
 	ret
 charPrompt ENDP
+
+scoreCard PROC
+	.data
+	charString BYTE "Characters, Correct / Typed - ",0
+	wordString BYTE "Words, Perfected / Finished - ",0
+	scoreString BYTE "YOUR FINAL SCORE IS... ",0
+	line BYTE newLine,0
+	.code
+	pushad
+	MOV EDX, OFFSET charString
+	CALL WriteString
+	MOV EAX, correctCharacters
+	CALL WriteDec
+	MOV AL, "/"
+	CALL WriteChar
+	MOV EAX, charactersWritten
+	CALL WriteDec
+	MOV EDX, OFFSET line
+	CALL WriteString
+
+	MOV EDX, OFFSET wordString
+	CALL WriteString
+	MOV EAX, perfectWords
+	SHR EAX, 1
+	CALL WriteDec
+	MOV AL, "/"
+	CALL WriteChar
+	MOV EAX, wordCounter
+	CALL WriteDec
+	MOV EDX, OFFSET line
+	CALL WriteString	
+
+	MOV EDX, OFFSET scoreString
+	CALL WriteString
+	MOV EAX, finalScore
+	CALL WriteDec
+	popad
+	ret
+scoreCard ENDP
 
 
 
@@ -140,25 +169,15 @@ main PROC
 	MOV inputHandler, EAX
 	INVOKE GetStdHandle, STD_OUTPUT_HANDLE
 	MOV outputHandler, EAX
-	; Here's a file containing the words we'll be throwing
-	INVOKE CreateFile, 
-		ADDR wordFile, ; filename
-		GENERIC_READ, ; what I plan to do with it
-		DO_NOT_SHARE, ; share it
-		NULL, ; security attributes to worry about
-		OPEN_EXISTING, ; open or create
-		FILE_ATTRIBUTE_NORMAL, ; attributes to expect
-		0 ; template file, not using
-	MOV fileHandler, EAX
 
 	printMe testMsg, msgSize
 	printMe pString, pSize
-	call CharPrompt
+	call ReadChar
 
 	call GetMseconds
 	MOV currTime, EAX
 	MOV startTime, EAX
-	ADD EAX, (60 * 1000)
+	ADD EAX, (10 * 1000)
 	MOV endTime, EAX
 
 	call ClrScr
@@ -174,8 +193,7 @@ endcharLoop:
 	JE perfectWord
 backToIt:
 	MOV ECX, 2
-	ADD wordCounter, '1'
-	AAA
+	ADD wordCounter, 1
 	LOOP gameLoop
 
 preparation:
@@ -191,8 +209,7 @@ preparation:
 	jmp charLoop
 
 perfectWord:
-	ADD perfectWords, '2'
-	AAA
+	ADD perfectWords, 2
 	moveCursor perfPos
 	MOV EAX, black*16 + yellow
 	call SetTextColor
@@ -212,8 +229,7 @@ gameplay:
 	popad
 
 	jne missed
-	ADD correctCharacters, '1'
-	AAA
+	ADD correctCharacters, 1
 	MOV AX, green*16 + white
 	jmp writing
 missed:
@@ -222,8 +238,7 @@ missed:
 writing:
 	call SetTextColor
 	printMe charBuf, 1
-	ADD charactersWritten, '1'
-	AAA
+	ADD charactersWritten, 1
 	MOV AX, black*16 + lightGray
 	call SetTextColor
 	timeCheck
@@ -231,22 +246,21 @@ writing:
 	jmp endCharLoop
 
 timeUp:
-	asciiIncrement finalScore, correctCharacters
-	asciiIncrement finalScore, perfectWords
+	MOV EAX, finalScore
+	ADD EAX, correctCharacters
+	ADD EAX, perfectWords
+	MOV finalScore, EAX
 	call ClrScr
 	printMe timeMsg1, tms1
 	MOV EAX, 2000
 	call Delay
 
 	moveCursor scorePos
-	scoreCard WORD PTR charactersWritten, WORD PTR correctCharacters, WORD PTR wordCounter, WORD PTR perfectWords, WORD PTR finalScore
+	call ScoreCard
 
 	moveCursor endPos
 	printMe endMsg, emSize
 	call CharPrompt
-
-	MOV EAX, fileHandler
-	call CloseFile
 	exit
 main ENDP
 END main
